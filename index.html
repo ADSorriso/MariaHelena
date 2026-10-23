@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7dce4">
+  <meta name="description" content="Um convite muito especial para o chá de bebê da Maria Helena. Confirme sua presença e escolha um presente com carinho!">
+  <meta property="og:title" content="Chá de Bebê da Maria Helena 🧸💗">
+  <meta property="og:description" content="Você é nosso convidado! Sábado, 23 de janeiro de 2027, às 15h.">
+  <title>Chá de Bebê da Maria Helena 💗</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Great+Vibes&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js" defer></script>
+  <script src="data.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <svg class="svg-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8C4 8 5 2 8.5 2 11 2 12 8 12 8Zm0 0c8 0 7-6 3.5-6C13 2 12 8 12 8Z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2ZM17 5a3 3 0 0 1 0 6m2 10v-2a6 6 0 0 0-3-5.2"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M5 14v6a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-6"/></symbol>
+  </svg>
+  <div class="site-bg" aria-hidden="true"><span class="bg-glow glow-left"></span><span class="bg-glow glow-right"></span></div>
+  <div class="page-frame">
+    <header class="topbar">
+      <span class="topbar-mark">✿</span>
+      <span>Um dia de muito amor</span>
+      <button class="share-button" type="button" id="shareBtn" aria-label="Compartilhar convite" title="Compartilhar convite"><svg><use href="#i-share"/></svg></button>
+    </header>
+    <main class="invitation" id="invitation">
+      <div class="decor stars star-one" aria-hidden="true">✦</div>
+      <div class="decor stars star-two" aria-hidden="true">✧</div>
+      <div class="decor small-heart heart-one" aria-hidden="true">♥</div>
+      <div class="decor small-heart heart-two" aria-hidden="true">♥</div>
+      <div class="decor small-heart heart-three" aria-hidden="true">♥</div>
+      <img class="decor balloons" src="assets/balloons.svg" alt="" aria-hidden="true">
+      <img class="decor bear-top" src="assets/ursinha.svg" alt="" aria-hidden="true">
+      <img class="decor bear-bottom" src="assets/ursinha.svg" alt="" aria-hidden="true">
+      <div class="decor fluffy-heart" aria-hidden="true">♡</div>
+      <div class="outer-arch"><div class="inner-arch"></div></div>
+
+      <section class="screen screen-cover" id="coverScreen" aria-labelledby="coverTitle">
+        <div class="cover-content">
+          <p class="microcopy">Um convite feito com muito carinho</p>
+          <p class="script-label">Chá da</p>
+          <h1 id="coverTitle" class="hero-name">Maria Helena</h1>
+          <div class="little-divider"><span></span>♥<span></span></div>
+          <p class="cover-message">Você acaba de receber um<br><em>convite muito especial.</em></p>
+          <button class="envelope-button" id="openEnvelope" type="button" aria-label="Abrir o convite da Maria Helena">
+            <span class="envelope-body"><span class="envelope-inside"></span><span class="envelope-flap"></span><span class="envelope-front"></span><span class="wax-seal">♥</span></span>
+            <span class="visually-hidden">Abrir convite</span>
+          </button>
+          <p class="click-instruction">Toque no selo para abrir <span>♡</span></p>
+          <span class="hint-pill">Preparado com amor para você</span>
+        </div>
+      </section>
+
+      <section class="screen screen-invite" id="inviteScreen" aria-labelledby="inviteTitle" hidden>
+        <div class="invite-content">
+          <button class="back-link" id="backCover" type="button"><svg><use href="#i-arrow"/></svg> Voltar ao envelope</button>
+          <p class="microcopy">Você foi convidado para o meu</p>
+          <p class="script-label invite-script">Chá de Bebê</p>
+          <h2 id="inviteTitle" class="hero-name invite-name">Maria Helena</h2>
+          <div class="little-divider"><span></span>♥<span></span></div>
+          <p class="invite-note">Estou chegando e já sou muito amada!<br>Será uma alegria ter você com a gente nesse momento tão especial.</p>
+          <div class="date-card" aria-label="Data: sábado, 23 de janeiro de 2027, às 15 horas">
+            <div class="date-side"><span>Horário</span><strong>15:00</strong></div>
+            <div class="date-center"><span>Janeiro</span><strong>23</strong><span>2027</span></div>
+            <div class="date-side"><span>Dia da semana</span><strong>Sábado</strong></div>
+          </div>
+          <p class="location-line"><svg><use href="#i-pin"/></svg> Santa Maria 1 · Rua Nossa Senhora de Fátima</p>
+          <p class="interaction-title">Toque nos ícones para interagir</p>
+          <div class="action-buttons">
+            <a class="action-item" id="mapLink" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&amp;query=Rua%20Nossa%20Senhora%20de%20F%C3%A1tima%20Quadra%2012%20Casa%2012%20Santa%20Maria%201"><span class="action-bubble"><svg><use href="#i-pin"/></svg></span><span>Local da<br>festa</span></a>
+            <button class="action-item" type="button" data-go="rsvp"><span class="action-bubble"><svg><use href="#i-check"/></svg></span><span>Confirmar<br>presença</span></button>
+            <button class="action-item" type="button" data-go="gifts"><span class="action-bubble"><svg><use href="#i-gift"/></svg></span><span>Lista de<br>presentes</span></button>
+          </div>
+          <div class="event-address"><span>Onde será?</span><strong>Rua Nossa Senhora de Fátima</strong><span>Quadra 12, Casa 12 · Santa Maria 1</span></div>
+          <div class="bottom-links"><button type="button" id="calendarBtn">♡ Adicionar ao calendário</button></div>
+        </div>
+      </section>
+
+      <section class="screen screen-panel" id="giftsScreen" aria-labelledby="giftsTitle" hidden>
+        <div class="panel-content">
+          <button class="back-link" type="button" data-go="invite"><svg><use href="#i-arrow"/></svg> Voltar ao convite</button>
+          <p class="microcopy">Cada carinho faz a diferença</p>
+          <p class="script-label panel-script">Com amor</p>
+          <h2 id="giftsTitle" class="section-title">Lista de presentes</h2>
+          <p class="panel-description">Escolha o que deseja presentear. Os itens são riscados automaticamente quando a quantidade é completada. 🎀</p>
+          <div class="stats-row" id="giftStats" aria-live="polite"></div>
+          <div class="gift-filters" id="giftFilters" role="group" aria-label="Filtrar presentes"></div>
+          <div class="gift-list" id="giftList" aria-live="polite"><p class="loading-state">Carregando presentes... ♡</p></div>
+          <p class="tiny-info">As escolhas ficam reservadas para evitar presentes repetidos. Para mudar uma escolha, fale com a organizadora.</p>
+        </div>
+      </section>
+
+      <section class="screen screen-panel" id="rsvpScreen" aria-labelledby="rsvpTitle" hidden>
+        <div class="panel-content">
+          <button class="back-link" type="button" data-go="invite"><svg><use href="#i-arrow"/></svg> Voltar ao convite</button>
+          <p class="microcopy">Sua presença será um presente</p>
+          <p class="script-label panel-script">Esperamos você!</p>
+          <h2 id="rsvpTitle" class="section-title">Confirme sua presença</h2>
+          <p class="panel-description">Estamos preparando tudo com carinho. Conta pra gente se você vem! ♡</p>
+          <div class="rsvp-total" id="rsvpTotal"></div>
+          <form class="pretty-form" id="rsvpForm">
+            <label for="guestName">Seu nome completo</label>
+            <input id="guestName" name="guestName" type="text" minlength="2" maxlength="90" required autocomplete="name" placeholder="Como podemos chamar você?">
+            <label for="attending">Você poderá comparecer?</label>
+            <select id="attending" name="attending" required><option value="yes">Sim, estarei presente! 💗</option><option value="no">Infelizmente não poderei ir</option></select>
+            <div id="peopleField"><label for="guestCount">Total de pessoas (incluindo você)</label><select id="guestCount" name="guestCount"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option></select></div>
+            <label for="guestMessage">Um recadinho para a Maria Helena <small>(opcional)</small></label>
+            <textarea id="guestMessage" rows="3" maxlength="350" placeholder="Deixe seu carinho aqui..."></textarea>
+            <button class="primary-button" id="rsvpSubmit" type="submit"><svg><use href="#i-heart"/></svg> Salvar minha resposta</button>
+            <p class="form-caption">Você poderá atualizar sua resposta neste mesmo navegador.</p>
+          </form>
+        </div>
+      </section>
+      <div class="screen-bottom-fade" aria-hidden="true"></div>
+    </main>
+    <footer class="site-footer"><span>Feito com <span class="pink">♥</span> para Maria Helena</span><a href="admin.html" title="Área da organizadora">Área da organizadora</a></footer>
+  </div>
+
+  <dialog class="gift-dialog" id="giftDialog" aria-labelledby="reserveTitle">
+    <form id="reserveForm" method="dialog">
+      <button type="button" class="dialog-close" id="closeGiftDialog" aria-label="Fechar">×</button>
+      <div class="dialog-icon">🎁</div>
+      <p class="microcopy">Um presente especial</p>
+      <h2 id="reserveTitle">Escolher presente</h2>
+      <p class="dialog-gift-name" id="chosenGiftName"></p>
+      <label for="reserveName">Seu nome</label><input type="text" id="reserveName" autocomplete="name" required minlength="2" maxlength="90" placeholder="Digite seu nome">
+      <label for="reserveQty">Quantidade que deseja dar</label><select id="reserveQty" required></select>
+      <p class="dialog-note">Sua escolha será contabilizada na lista para ninguém selecionar mais do que o necessário.</p>
+      <button type="submit" class="primary-button" id="reserveSubmit">Confirmar presente ♡</button>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
