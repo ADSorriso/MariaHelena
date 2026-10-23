@@ -20,7 +20,6 @@
   <svg class="svg-symbols" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
     <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></symbol>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
-    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6"/></symbol>
     <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8v13M3 12h18M12 8C4 8 5 2 8.5 2 11 2 12 8 12 8Zm0 0c8 0 7-6 3.5-6C13 2 12 8 12 8Z"/></symbol>
     <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 21v-2a6 6 0 0 1 12 0v2ZM17 5a3 3 0 0 1 0 6m2 10v-2a6 6 0 0 0-3-5.2"/></symbol>
@@ -75,15 +74,13 @@
             <div class="date-center"><span>Janeiro</span><strong>23</strong><span>2027</span></div>
             <div class="date-side"><span>Dia da semana</span><strong>Sábado</strong></div>
           </div>
-          <p class="location-line"><svg><use href="#i-pin"/></svg> Santa Maria 1 · Rua Nossa Senhora de Fátima</p>
           <p class="interaction-title">Toque nos ícones para interagir</p>
           <div class="action-buttons">
-            <a class="action-item" id="mapLink" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&amp;query=Rua%20Nossa%20Senhora%20de%20F%C3%A1tima%20Quadra%2012%20Casa%2012%20Santa%20Maria%201"><span class="action-bubble"><svg><use href="#i-pin"/></svg></span><span>Local da<br>festa</span></a>
             <button class="action-item" type="button" data-go="rsvp"><span class="action-bubble"><svg><use href="#i-check"/></svg></span><span>Confirmar<br>presença</span></button>
             <button class="action-item" type="button" data-go="gifts"><span class="action-bubble"><svg><use href="#i-gift"/></svg></span><span>Lista de<br>presentes</span></button>
           </div>
-          <div class="event-address"><span>Onde será?</span><strong>Rua Nossa Senhora de Fátima</strong><span>Quadra 12, Casa 12 · Santa Maria 1</span></div>
-          <div class="bottom-links"><button type="button" id="calendarBtn">♡ Adicionar ao calendário</button></div>
+          <div class="event-address location-notice"><span>Onde será?</span><strong>Assim que confirmada a presença, o local será enviado por WhatsApp.</strong><span>Informe seu telefone na confirmação para receber os detalhes da festa. 💗</span></div>
+          <div class="bottom-links"><button type="button" id="calendarBtn">♡ Adicionar ao calendário</button></div><a class="organizer-mini" href="admin.html">🔒 Área da organizadora</a>
         </div>
       </section>
 
@@ -107,24 +104,27 @@
           <p class="microcopy">Sua presença será um presente</p>
           <p class="script-label panel-script">Esperamos você!</p>
           <h2 id="rsvpTitle" class="section-title">Confirme sua presença</h2>
-          <p class="panel-description">Estamos preparando tudo com carinho. Conta pra gente se você vem! ♡</p>
+          <p class="panel-description">Estamos preparando tudo com carinho! Confirme sua presença e deixe seu WhatsApp para a organizadora enviar o endereço da festa. ♡</p>
           <div class="rsvp-total" id="rsvpTotal"></div>
           <form class="pretty-form" id="rsvpForm">
             <label for="guestName">Seu nome completo</label>
             <input id="guestName" name="guestName" type="text" minlength="2" maxlength="90" required autocomplete="name" placeholder="Como podemos chamar você?">
+            <label for="guestPhone">Seu número de WhatsApp <small id="phoneRequiredLabel">(obrigatório para receber o local)</small></label>
+            <input id="guestPhone" name="guestPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" required placeholder="(65) 99999-9999" aria-describedby="phoneHelp">
+            <p id="phoneHelp" class="phone-help">Informe o DDD e o número. O telefone ficará disponível apenas para a organizadora entrar em contato sobre a festa.</p>
             <label for="attending">Você poderá comparecer?</label>
             <select id="attending" name="attending" required><option value="yes">Sim, estarei presente! 💗</option><option value="no">Infelizmente não poderei ir</option></select>
             <div id="peopleField"><label for="guestCount">Total de pessoas (incluindo você)</label><select id="guestCount" name="guestCount"><option value="1">1 pessoa</option><option value="2">2 pessoas</option><option value="3">3 pessoas</option><option value="4">4 pessoas</option><option value="5">5 pessoas</option><option value="6">6 pessoas</option><option value="7">7 pessoas</option><option value="8">8 pessoas</option><option value="9">9 pessoas</option><option value="10">10 pessoas</option></select></div>
             <label for="guestMessage">Um recadinho para a Maria Helena <small>(opcional)</small></label>
             <textarea id="guestMessage" rows="3" maxlength="350" placeholder="Deixe seu carinho aqui..."></textarea>
             <button class="primary-button" id="rsvpSubmit" type="submit"><svg><use href="#i-heart"/></svg> Salvar minha resposta</button>
-            <p class="form-caption">Você poderá atualizar sua resposta neste mesmo navegador.</p>
+            <p class="form-caption">O endereço não aparece no convite. Após a confirmação, a organizadora enviará o local manualmente pelo WhatsApp. Você poderá atualizar sua resposta neste navegador.</p>
           </form>
         </div>
       </section>
       <div class="screen-bottom-fade" aria-hidden="true"></div>
     </main>
-    <footer class="site-footer"><span>Feito com <span class="pink">♥</span> para Maria Helena</span><a href="admin.html" title="Área da organizadora">Área da organizadora</a></footer>
+    <footer class="site-footer"><span>Feito com <span class="pink">♥</span> para Maria Helena</span><a href="admin.html" title="Área da organizadora (acesso com senha)">🔒 Acesso da mamãe</a></footer>
   </div>
 
   <dialog class="gift-dialog" id="giftDialog" aria-labelledby="reserveTitle">

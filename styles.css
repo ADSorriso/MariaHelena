@@ -10,3 +10,30 @@
 @media(max-width:370px){.cover-content{padding-top:162px}.bear-top{width:146px}.hero-name{font-size:48px}.cover-message{font-size:15px}.invite-content{padding:160px 11px 60px}.date-side{min-width:79px}.date-side strong{font-size:16px}.date-center{min-width:63px}.action-bubble{width:58px;height:58px}.screen-panel .panel-content{padding:137px 16px 60px}.section-title{font-size:28px}.admin-form{grid-template-columns:1fr}}
 @media(min-width:561px){.page-frame{padding-top:10px}.invitation{min-height:800px}.screen{min-height:800px}.cover-content{padding-top:175px}.invite-content{padding-top:205px}.screen-invite .back-link{top:150px}.screen-panel .panel-content{padding-top:172px}.bear-top{width:214px}.bear-bottom{width:195px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Painel da organizadora com tela de senha */
+.organizer-mini{display:inline-flex;align-items:center;justify-content:center;margin-top:13px;padding:7px 14px;color:#b77b92;font-size:11px;text-decoration:none;border:1px solid #f1d5df;border-radius:99px;background:#fff8fba6}.organizer-mini:hover{background:white}
+.admin-login{margin:42px auto 0;padding:36px 30px;text-align:center;max-width:440px;border-radius:25px;box-shadow:0 24px 70px #b9779721}
+.login-lock{width:68px;height:68px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;background:#fff0f5;box-shadow:inset 0 0 0 1px #edccda;font-size:31px}
+.admin-greeting{margin:8px 0 0!important}.admin-login h1,.dashboard-intro h1{font:30px 'Playfair Display',Georgia,serif;color:#ac6a83;line-height:1.2;margin:9px 0 12px}.admin-login>p{max-width:325px;margin:10px auto;line-height:1.6}.admin-login form{text-align:left;margin-top:23px}.admin-login label{font-size:13px}.password-input-wrap{display:flex;position:relative}.password-input-wrap input{padding-right:49px}.show-password{position:absolute;right:2px;top:2px;bottom:2px;width:46px;color:#a56e83;background:transparent;border:0;border-radius:8px;font-size:18px}.admin-login .primary-button{font-size:14px;margin-top:20px;min-height:46px}.login-error{color:#b13759!important;font-weight:600;font-size:12px}.admin-help{color:#a88794!important;font-size:11px!important}.dashboard-intro{display:flex;gap:15px;justify-content:space-between;align-items:center;margin:24px 0 19px}.dashboard-intro h1{margin:7px 0 5px}.dashboard-intro>div>p:last-child{font-size:13px;color:#997586;margin:4px 0}.admin-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}.admin-section-head p{margin:0}.admin-filter-bar{display:flex;gap:9px;flex-wrap:wrap;margin:17px 0}.admin-filter-bar input,.admin-filter-bar select{min-height:42px;padding:8px 12px;background:#fff;border:1px solid #eed0dc;border-radius:10px;color:#935e77;font:13px 'DM Sans',sans-serif}.admin-filter-bar input{flex:1;min-width:145px}.admin-filter-bar select{flex:0 1 180px}.admin-tabs{align-items:center}.admin-tab{font-weight:700}.admin-tab:focus-visible,.admin-small-btn:focus-visible,.logout-btn:focus-visible{outline:3px solid #d78ea7;outline-offset:2px}.admin-item{min-width:0}.admin-item>div:first-child{min-width:0;overflow-wrap:anywhere}.admin-item-sub{font-size:12px}.admin-kpi:nth-child(1){background:#fff6f9}.admin-kpi:nth-child(2){background:#fff9fb}.admin-kpi:nth-child(3){background:#fff6f9}
+@media(max-width:600px){.admin-login{padding:26px 19px;margin-top:22px}.admin-login h1{font-size:26px}.admin-section-head{display:block}.admin-section-head button{margin-top:10px}.dashboard-intro{align-items:flex-start;flex-direction:column}.admin-tabs{gap:6px}.admin-tab{padding:9px 10px;font-size:11px}.admin-item{align-items:flex-start;flex-direction:column}.admin-buttons{width:100%;justify-content:flex-start}.admin-filter-bar select{flex-grow:1}}
+
+@media(min-width:601px){.admin-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:600px){.admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Local da festa é enviado individualmente por WhatsApp (não aparece no convite). */
+.action-buttons:has(.action-item:nth-child(2):last-child){justify-content:center;gap:30px}
+.location-notice{max-width:355px;margin:22px auto 0;padding:15px 15px 13px;background:#fffafde0;border:1px solid #f2d7e0;border-radius:20px;box-shadow:0 4px 20px #d788a512}
+.location-notice span:first-child{font:24px 'Great Vibes',cursive;color:#b2718c}
+.location-notice strong{display:block;font-size:13px;font-weight:650;color:#a76d85;line-height:1.5;margin:8px 0}
+.location-notice span:last-child{display:block;font-size:11px;color:#ad8493;line-height:1.45}
+.phone-help{margin:-4px 0 10px;font-size:11px;line-height:1.45;color:#a17a89}
+.admin-private-location{padding:17px;background:#fff8fb;border:1px solid #edd2de;border-radius:15px;margin:0 0 22px}
+.admin-private-location h2{font-family:'Playfair Display',Georgia,serif;font-size:19px;color:#9c627b;margin:0 0 5px}
+.admin-private-location p{font-size:12px;color:#956c7e;line-height:1.5;margin:0 0 10px}
+.admin-private-location .location-inputs{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.admin-private-location input{flex:1;min-width:210px;padding:11px 12px;border:1px solid #e2b9cc;border-radius:10px;min-height:45px;font:13px 'DM Sans',sans-serif;color:#875c72}
+.admin-sent{color:#258456;font-weight:700}.admin-pending{color:#a57435;font-weight:650}
+.admin-whatsapp{border-color:#9ed7ba!important;background:#f0fff5!important;color:#23754b!important}
+.admin-private-location .tiny-note{margin:9px 0 0;font-size:11px}
+@media(max-width:560px){.action-buttons{gap:26px}.location-notice{max-width:295px;margin-top:18px}.admin-private-location .location-inputs{align-items:stretch}.admin-private-location input{min-width:100%}}

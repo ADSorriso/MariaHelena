@@ -46,12 +46,14 @@
     if(!cloud){let d=readLocal(),g=d.gifts.find(x=>x.id===id);if(!g)throw new Error('Presente não encontrado.');if(g.completed||g.reserved+quantity>g.quantity)throw new Error('Essa quantidade não está mais disponível.');g.reserved+=quantity;d.reservations.unshift({id:uid(),gift_id:id,guest_name:name,quantity,created_at:new Date().toISOString()});saveLocal(d);return;}
     const s=await client();const {error}=await s.rpc('reserve_baby_gift',{p_gift_id:id,p_guest_name:name,p_qty:quantity});if(error)throw normalizeError(error);
   }
-  async function saveRsvp({name,attending,people,message}){
+  async function saveRsvp({name,attending,people,message,phone}){
     name=String(name||'').trim();message=String(message||'').trim();people=attending?Number(people):0;
+    phone=String(phone||'').replace(/\D/g,'').replace(/^55(?=\d{10,11}$)/,'');
     if(name.length<2||name.length>90||message.length>350||(attending&&(!Number.isInteger(people)||people<1||people>10)))throw new Error('Confira os dados da confirmação.');
+    if((attending||phone)&&!/^([1-9][0-9])(?:[2-9][0-9]{7}|9[0-9]{8})$/.test(phone))throw new Error('Informe um WhatsApp válido com DDD para receber o local.');
     const token=getRsvpToken();
-    if(!cloud){const d=readLocal();const found=d.rsvps.find(x=>x.secret===token);const body={secret:token,guest_name:name,attending:!!attending,total_people:people,message,updated_at:new Date().toISOString()};if(found)Object.assign(found,body);else d.rsvps.unshift({id:uid(),...body});saveLocal(d);return;}
-    const s=await client();const {error}=await s.rpc('save_baby_rsvp',{p_secret:token,p_guest_name:name,p_attending:!!attending,p_total_people:people,p_message:message});if(error)throw normalizeError(error);
+    if(!cloud){const d=readLocal();const found=d.rsvps.find(x=>x.secret===token);const body={secret:token,guest_name:name,attending:!!attending,total_people:people,phone,message,updated_at:new Date().toISOString(),location_sent_at:found?.phone===phone&&found?.attending===!!attending?found?.location_sent_at||null:null};if(found)Object.assign(found,body);else d.rsvps.unshift({id:uid(),...body});saveLocal(d);return;}
+    const s=await client();const {error}=await s.rpc('save_baby_rsvp',{p_secret:token,p_guest_name:name,p_attending:!!attending,p_total_people:people,p_message:message,p_phone:phone});if(error)throw normalizeError(error);
   }
   async function getRsvpTotals(){
     if(!cloud){const r=readLocal().rsvps.filter(x=>x.attending);return{people:r.reduce((a,b)=>a+b.total_people,0),guests:r.length};}
@@ -62,7 +64,7 @@
   async function adminSession(){if(!cloud)return{demo:true};const s=await client();const{data}=await s.auth.getSession();if(!data.session)return null;const {data:allowed,error}=await s.rpc('baby_is_admin');if(error||!allowed)return null;return data.session;}
   async function adminSignOut(){if(cloud){const s=await client();await s.auth.signOut();}}
   async function adminReservations(){if(!cloud)return readLocal().reservations;const s=await client();const {data,error}=await s.from('baby_reservations').select('id,gift_id,guest_name,quantity,created_at').order('created_at',{ascending:false});if(error)throw normalizeError(error);return data;}
-  async function adminRsvps(){if(!cloud)return readLocal().rsvps;const s=await client();const {data,error}=await s.from('baby_rsvps').select('id,guest_name,attending,total_people,message,updated_at').order('updated_at',{ascending:false});if(error)throw normalizeError(error);return data;}
+  async function adminRsvps(){if(!cloud)return readLocal().rsvps;const s=await client();const {data,error}=await s.from('baby_rsvps').select('id,guest_name,attending,total_people,phone,location_sent_at,message,updated_at').order('updated_at',{ascending:false});if(error)throw normalizeError(error);return data;}
   async function updateGift(gift){
     const body={name:String(gift.name||'').trim(),category:String(gift.category||'').trim(),description:String(gift.description||'').trim(),quantity:Number(gift.quantity),completed:Boolean(gift.completed),sort_order:Number(gift.sort_order)||100};
     if(!body.name||!body.category||body.quantity<1||!Number.isInteger(body.quantity)||body.quantity>1000)throw new Error('Confira nome, categoria e quantidade.');
@@ -71,6 +73,11 @@
   }
   async function removeGift(id){if(!cloud){let d=readLocal();if(d.reservations.some(r=>r.gift_id===id))throw new Error('Exclua as reservas desse item antes.');d.gifts=d.gifts.filter(x=>x.id!==id);saveLocal(d);return;}const s=await client();const {error}=await s.from('baby_gifts').delete().eq('id',id);if(error)throw normalizeError(error);}
   async function removeReservation(id){if(!cloud){const d=readLocal();const r=d.reservations.find(x=>x.id===id);if(r){const g=d.gifts.find(x=>x.id===r.gift_id);if(g)g.reserved=Math.max(0,g.reserved-r.quantity);}d.reservations=d.reservations.filter(x=>x.id!==id);saveLocal(d);return;}const s=await client();const{error}=await s.from('baby_reservations').delete().eq('id',id);if(error)throw normalizeError(error);}
+  async function setLocationSent(id,sent){
+    if(!cloud){const d=readLocal();const r=d.rsvps.find(x=>x.id===id);if(!r)throw new Error('Convidado não encontrado.');r.location_sent_at=sent?new Date().toISOString():null;saveLocal(d);return;}
+    const s=await client();const {error}=await s.from('baby_rsvps').update({location_sent_at:sent?new Date().toISOString():null}).eq('id',id);
+    if(error)throw normalizeError(error);
+  }
   async function removeRsvp(id){if(!cloud){let d=readLocal();d.rsvps=d.rsvps.filter(x=>x.id!==id);saveLocal(d);return;}const s=await client();const{error}=await s.from('baby_rsvps').delete().eq('id',id);if(error)throw normalizeError(error);}
-  window.MariaStore={isCloud:cloud,client,listGifts,reserveGift,saveRsvp,getRsvpTotals,myDemoRsvp,adminSignIn,adminSession,adminSignOut,adminReservations,adminRsvps,updateGift,removeGift,removeReservation,removeRsvp};
+  window.MariaStore={isCloud:cloud,client,listGifts,reserveGift,saveRsvp,getRsvpTotals,myDemoRsvp,adminSignIn,adminSession,adminSignOut,adminReservations,adminRsvps,setLocationSent,updateGift,removeGift,removeReservation,removeRsvp};
 })();

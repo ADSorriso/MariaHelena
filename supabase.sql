@@ -32,10 +32,16 @@ create table if not exists public.baby_rsvps (
   guest_name text not null check (length(trim(guest_name)) between 2 and 90),
   attending boolean not null,
   total_people integer not null default 0 check (total_people between 0 and 10),
+  phone text not null default '' check (phone = '' or phone ~ '^([1-9][0-9])([2-9][0-9]{7}|9[0-9]{8})$'),
+  location_sent_at timestamptz,
   message text not null default '' check (length(message) <= 350),
   updated_at timestamptz not null default now(),
   constraint attendance_count_consistent check ((attending and total_people>=1) or (not attending and total_people=0))
 );
+
+-- Atualização idempotente para bancos criados com versões anteriores deste convite.
+alter table public.baby_rsvps add column if not exists phone text not null default '';
+alter table public.baby_rsvps add column if not exists location_sent_at timestamptz;
 
 create or replace function public.baby_is_admin()
 returns boolean language sql stable security definer set search_path=public
@@ -91,8 +97,10 @@ create trigger baby_reservation_deleted after delete on public.baby_reservations
 for each row execute function public.baby_restore_reservation();
 
 -- Cada navegador recebe um código aleatório para que o convidado atualize a própria resposta.
+-- Substitui a versão antiga que não solicitava o WhatsApp.
+drop function if exists public.save_baby_rsvp(uuid,text,boolean,integer,text);
 create or replace function public.save_baby_rsvp(
-  p_secret uuid,p_guest_name text,p_attending boolean,p_total_people integer,p_message text
+  p_secret uuid,p_guest_name text,p_attending boolean,p_total_people integer,p_message text,p_phone text
 ) returns void language plpgsql security definer set search_path=public
 as $$
 begin
@@ -100,15 +108,21 @@ begin
   or p_attending is null or p_total_people is null
   or (p_attending and p_total_people not between 1 and 10)
   or (not p_attending and p_total_people <> 0)
-  or length(coalesce(p_message,'')) > 350 then
+  or length(coalesce(p_message,'')) > 350
+  or (coalesce(p_phone,'') <> '' and p_phone !~ '^([1-9][0-9])([2-9][0-9]{7}|9[0-9]{8})$')
+  or (p_attending and coalesce(p_phone,'') = '') then
     raise exception 'Verifique os dados da confirmação.';
   end if;
-  insert into public.baby_rsvps(secret,guest_name,attending,total_people,message,updated_at)
-  values(p_secret,trim(p_guest_name),p_attending,p_total_people,coalesce(p_message,''),now())
+  insert into public.baby_rsvps(secret,guest_name,attending,total_people,phone,message,updated_at)
+  values(p_secret,trim(p_guest_name),p_attending,p_total_people,coalesce(p_phone,''),coalesce(p_message,''),now())
   on conflict(secret) do update set
     guest_name=excluded.guest_name,
     attending=excluded.attending,
     total_people=excluded.total_people,
+    location_sent_at=case when public.baby_rsvps.phone is distinct from excluded.phone
+        or public.baby_rsvps.attending is distinct from excluded.attending then null
+        else public.baby_rsvps.location_sent_at end,
+    phone=excluded.phone,
     message=excluded.message,
     updated_at=now();
 end;$$;
@@ -127,14 +141,14 @@ revoke all on public.baby_gifts from anon,authenticated;
 grant select on public.baby_gifts to anon,authenticated;
 grant insert,update,delete on public.baby_gifts to authenticated;
 grant select,delete on public.baby_reservations to authenticated;
-grant select,delete on public.baby_rsvps to authenticated;
+grant select,update,delete on public.baby_rsvps to authenticated;
 revoke all on function public.baby_is_admin() from public;
 revoke all on function public.reserve_baby_gift(uuid,text,integer) from public;
-revoke all on function public.save_baby_rsvp(uuid,text,boolean,integer,text) from public;
+revoke all on function public.save_baby_rsvp(uuid,text,boolean,integer,text,text) from public;
 revoke all on function public.baby_rsvp_totals() from public;
 grant execute on function public.baby_is_admin() to authenticated;
 grant execute on function public.reserve_baby_gift(uuid,text,integer) to anon,authenticated;
-grant execute on function public.save_baby_rsvp(uuid,text,boolean,integer,text) to anon,authenticated;
+grant execute on function public.save_baby_rsvp(uuid,text,boolean,integer,text,text) to anon,authenticated;
 grant execute on function public.baby_rsvp_totals() to anon,authenticated;
 
 insert into public.baby_gifts(name,category,description,quantity,sort_order) values

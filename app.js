@@ -27,8 +27,7 @@
     try{if(navigator.share)await navigator.share(data);else if(navigator.clipboard){await navigator.clipboard.writeText(location.href);toast('Link do convite copiado! 💗');}else toast('Copie o endereço deste site para compartilhar.');}catch(e){if(e.name!=='AbortError')toast('Não foi possível compartilhar.');}
   });
   $('#calendarBtn').addEventListener('click',()=>{
-    const loc='Rua Nossa Senhora de Fátima, Quadra 12, Casa 12, Santa Maria 1';
-    const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Convite Maria Helena//PT-BR','BEGIN:VEVENT','UID:maria-helena-20270123@convite','DTSTAMP:20261023T120000Z','DTSTART:20270123T150000','DTEND:20270123T180000','SUMMARY:Chá de Bebê da Maria Helena','DESCRIPTION:Vamos celebrar a chegada da Maria Helena!','LOCATION:'+loc,'END:VEVENT','END:VCALENDAR'];
+    const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Convite Maria Helena//PT-BR','BEGIN:VEVENT','UID:maria-helena-20270123@convite','DTSTAMP:20261023T120000Z','DTSTART:20270123T150000','DTEND:20270123T180000','SUMMARY:Chá de Bebê da Maria Helena','DESCRIPTION:Vamos celebrar a chegada da Maria Helena!','END:VEVENT','END:VCALENDAR'];
     const blob=new Blob([lines.join('\r\n')+'\r\n'],{type:'text/calendar;charset=utf-8'});
     const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='cha-de-bebe-maria-helena.ics';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('Evento adicionado ao arquivo do calendário ♡');
   });
@@ -75,18 +74,33 @@
     try{await store.reserveGift({id:chosenGift.id,name,quantity});localStorage.setItem('maria_helena_last_name',name);$('#giftDialog').close();toast('Presente reservado com carinho! Obrigada 💗');await refreshGifts();}catch(err){toast(err.message);await refreshGifts();}
     finally{busy=false;$('#reserveSubmit').disabled=false;$('#reserveSubmit').textContent='Confirmar presente ♡';}
   });
-  $('#attending').addEventListener('change',()=>{$('#peopleField').hidden=$('#attending').value==='no';});
+  // O número é necessário somente para quem irá ao evento.
+  const phoneDigits = value => String(value || '').replace(/\D/g, '').replace(/^55(?=\d{10,11}$)/, '');
+  const phoneValid = value => { const d=phoneDigits(value); return /^([1-9][0-9])(?:[2-9][0-9]{7}|9[0-9]{8})$/.test(d); };
+  function updateAttendanceFields(){
+    const attending=$('#attending').value==='yes';
+    $('#peopleField').hidden=!attending;
+    $('#guestPhone').required=attending;
+    $('#phoneRequiredLabel').textContent=attending?'(obrigatório para receber o local)':'(opcional)';
+  }
+  $('#attending').addEventListener('change',updateAttendanceFields);
+  $('#guestPhone').addEventListener('blur',()=>{
+    const d=phoneDigits($('#guestPhone').value);
+    if(d.length===11)$('#guestPhone').value=`(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+    else if(d.length===10)$('#guestPhone').value=`(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+  });
   async function refreshRsvp(){
     try{const totals=await store.getRsvpTotals();$('#rsvpTotal').innerHTML=`💗 <strong>${totals.people||0} ${Number(totals.people)===1?'pessoa confirmada':'pessoas confirmadas'}</strong> até agora${store.isCloud?'':' · demonstração local'}`;}catch(_){$('#rsvpTotal').textContent='Confirme sua presença com carinho 💗';}
     const saved=store.isCloud?JSON.parse(localStorage.getItem('maria_helena_my_rsvp_v1')||'null'):store.myDemoRsvp();
-    if(saved){$('#guestName').value=saved.guest_name;$('#attending').value=saved.attending?'yes':'no';$('#guestCount').value=String(saved.total_people||1);$('#guestMessage').value=saved.message||'';$('#peopleField').hidden=!saved.attending;$('#rsvpSubmit').innerHTML='♡ Atualizar minha resposta';}
+    if(saved){$('#guestName').value=saved.guest_name;$('#guestPhone').value=saved.phone||'';$('#attending').value=saved.attending?'yes':'no';$('#guestCount').value=String(saved.total_people||1);$('#guestMessage').value=saved.message||'';$('#rsvpSubmit').innerHTML='♡ Atualizar minha resposta';}updateAttendanceFields();
   }
   $('#rsvpForm').addEventListener('submit',async e=>{
     e.preventDefault();if(busy)return;
-    const name=$('#guestName').value.trim(),attending=$('#attending').value==='yes',people=Number($('#guestCount').value),message=$('#guestMessage').value.trim();
+    const name=$('#guestName').value.trim(),attending=$('#attending').value==='yes',people=Number($('#guestCount').value),message=$('#guestMessage').value.trim(),phone=phoneDigits($('#guestPhone').value);
     if(name.length<2){toast('Digite seu nome completo.');return;}
+    if((attending||phone)&&!phoneValid(phone)){toast('Digite um telefone com DDD válido, por exemplo (65) 99999-9999.');$('#guestPhone').focus();return;}
     busy=true;$('#rsvpSubmit').disabled=true;
-    try{await store.saveRsvp({name,attending,people,message});localStorage.setItem('maria_helena_my_rsvp_v1',JSON.stringify({guest_name:name,attending,total_people:attending?people:0,message}));toast(attending?'Presença confirmada! Esperamos você 💗':'Sua resposta foi recebida. Obrigada por avisar!');$('#rsvpSubmit').textContent='♡ Atualizar minha resposta';await refreshRsvp();}catch(err){toast(err.message);}finally{busy=false;$('#rsvpSubmit').disabled=false;}
+    try{await store.saveRsvp({name,attending,people,message,phone});localStorage.setItem('maria_helena_my_rsvp_v1',JSON.stringify({guest_name:name,attending,total_people:attending?people:0,message,phone}));toast(attending?'Presença confirmada! A organizadora enviará o local pelo WhatsApp. 💗':'Sua resposta foi recebida. Obrigada por avisar!');$('#rsvpSubmit').textContent='♡ Atualizar minha resposta';await refreshRsvp();}catch(err){toast(err.message);}finally{busy=false;$('#rsvpSubmit').disabled=false;}
   });
   if(store.isCloud){setInterval(()=>{if(currentScreen==='gifts')refreshGifts();else if(currentScreen==='rsvp')store.getRsvpTotals().then(x=>{if(currentScreen==='rsvp')$('#rsvpTotal').innerHTML=`💗 <strong>${x.people||0} pessoas confirmadas</strong> até agora`;}).catch(()=>{});},25000);}
 })();

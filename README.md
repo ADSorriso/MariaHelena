@@ -1,68 +1,64 @@
-# Chá de Bebê da Maria Helena 💗
+# Chá de Bebê da Maria Helena 🎀
 
-Site interativo em português, compatível com celular e computador, inspirado no convite rosa com ursinhos e envelope. Pode ser publicado gratuitamente no **GitHub Pages**.
+Site interativo responsivo com envelope rosa, ursinhos, presente e confirmação de presença. Pode ser publicado no GitHub Pages, com Supabase para compartilhar as confirmações entre convidados e permitir à organizadora acessar as listas com senha.
 
-## Informações do evento
+## Data e privacidade do local
 
-- **Maria Helena**
-- **Sábado, 23 de janeiro de 2027, às 15h**
-- **Rua Nossa Senhora de Fátima, Quadra 12, Casa 12, Santa Maria 1**
-- O botão de localização abre uma busca no Google Maps pelo endereço fornecido. **Confirme o município/estado e o pin antes de enviar o convite**, pois eles não foram informados.
+- **Maria Helena — sábado, 23 de janeiro de 2027, às 15h.**
+- O **endereço não aparece** em nenhuma parte do convite público, no arquivo de calendário ou em botões do Google Maps.
+- No cartão, abaixo de **Onde será?**, aparece: **“Assim que confirmada a presença, o local será enviado por WhatsApp.”**
+- O convidado confirma presença e informa seu **número de WhatsApp com DDD** (obrigatório se for comparecer, opcional se não puder ir).
+- O telefone consta apenas da lista **privada da organizadora** (em produção, protegida por Supabase Auth e RLS), não é divulgado para outros convidados.
 
-## Funcionalidades
+## Como a organizadora envia o local
 
-1. Envelope rosa com selo: ao tocar, abre o cartão.
-2. Cartão do evento com local, data, horário e botões de interação.
-3. Lista de presentes com categorias, quantidade desejada, quantidade reservada e progresso. Quando tudo estiver reservado, o presente é **riscado automaticamente**.
-4. Convidado escolhe presente, informa nome e quantidade; a lista é atualizada.
-5. Confirmação de presença com nome, número de pessoas e recado. O mesmo navegador pode atualizar a resposta.
-6. Área da organizadora (`admin.html`) com lista privada de respostas, reservas, cadastro de presentes e opção de **riscar/desmarcar** itens manualmente.
-7. Botão de compartilhar o convite e arquivo de calendário (.ics).
+1. No convite, entre em **🔒 Área da organizadora** (`admin.html`) e faça login.
+2. Abra a aba **💌 Presenças**. Ali aparecem nome, quantidade de participantes, WhatsApp, observações e status do envio.
+3. Na seção **📍 Local para enviar no WhatsApp**, informe o endereço completo ou link do mapa e clique em **Salvar local neste aparelho**. Esse texto **não é inserido em arquivos públicos do site**: fica somente no armazenamento deste navegador usado pela organizadora. Em outro aparelho é necessário preenchê-lo novamente.
+4. Para cada convidado confirmado, clique em **✆ Enviar local pelo WhatsApp**. Será aberta a conversa (`wa.me`) com o número informado e uma mensagem com nome do convidado, endereço e data.
+5. A organizadora **precisa apertar Enviar no WhatsApp**. Depois, no painel, deve clicar em **✓ Marcar como enviado**. O site **não envia mensagens automaticamente**, nem presume que foram entregues ao só abrir o WhatsApp.
+6. Os filtros **Aguardando endereço** e **Local enviado** ajudam a acompanhar quem recebeu a informação. O estado é guardado junto à confirmação no Supabase (ou somente neste navegador no modo demonstração).
+7. A exportação CSV da lista de presenças inclui o número e o status de envio. Guarde o arquivo com cuidado porque contém dados pessoais.
 
-## Testar rapidamente
+## Presentes e presença
 
-Abra `index.html` no navegador. Também pode usar Live Server no VS Code. Sem configuração adicional, o site roda em **modo demonstração local**, salvando as escolhas no navegador atual. A demonstração serve para validar o visual e as ações, **não sincroniza visitantes diferentes**. Não envie um convite real nesse modo esperando receber dados de outras pessoas.
+- Lista inicial de presentes com categorias, quantidades, total reservado e o que ainda falta. Itens completos ficam riscados automaticamente.
+- Cada convidado informa seu nome e quantidades para reservar um presente.
+- O formulário de presença solicita nome, WhatsApp, se comparecerá, quantidade de pessoas e recado opcional.
+- O mesmo navegador pode alterar a resposta. Se mudar o WhatsApp ou desistir de ir, o controle de “local enviado” é reiniciado para essa confirmação.
+- A organizadora pode editar presentes, cancelar reservas, excluir respostas, filtrar listas e exportar CSVs.
 
-Para testar o painel, abra `admin.html` no mesmo navegador. Em demonstração o painel não exige senha e só altera os dados locais.
+## Testar como demonstração
 
-## Ativar a lista compartilhada de verdade (Supabase)
+Abra `index.html` e `admin.html` no mesmo navegador por meio do **Live Server do VS Code** (localhost) ou HTTPS. No primeiro acesso ao painel você criará uma senha de demonstração com pelo menos 8 caracteres. Os dados da demonstração são salvos **somente no dispositivo/navegador atual**; não há sincronização com convidados em outros celulares. Essa senha é **local e não é uma proteção segura para um site publicado**. Não compartilhe o link do convite como site real até configurar o Supabase.
 
-1. Crie um projeto em https://supabase.com, de preferência dedicado a este convite.
-2. Abra **SQL Editor** e execute o arquivo `supabase.sql` inteiro.
-3. Vá em **Authentication → Users** e crie um usuário para a organizadora com e-mail e senha. Copie o **UUID** do usuário.
-4. Execute no **SQL Editor**, substituindo o UUID:
+## Ativar banco compartilhado com autenticação real (Supabase)
+
+1. Crie seu projeto no https://supabase.com.
+2. Abra **SQL Editor** e execute todo o arquivo `supabase.sql` (ele também atualiza as colunas `phone` e `location_sent_at` de um projeto que utilizava uma versão anterior). Para dados antigos, o telefone aparecerá como “Não informado” até o convidado atualizar a resposta.
+3. Em **Authentication → Users**, cadastre a organizadora com um e-mail e uma senha. Copie o UUID dela.
+4. No SQL Editor execute:
 
    ```sql
-   insert into public.baby_admins(user_id) values ('COLE-O-UUID-AQUI');
+   insert into public.baby_admins(user_id) values ('COLE-O-UUID-AQUI')
+   on conflict(user_id) do nothing;
    ```
 
-5. Vá em **Project Settings → API / Data API** (a nomenclatura pode variar). Copie a **Project URL** e a chave **anon/public** (ou a **publishable key**) para `config.js`:
+5. Em **Project Settings → API** pegue a URL do projeto e a chave **anon/public** (publishable, se disponível). Preencha `config.js`:
 
-   ```js
+   ```javascript
    window.MARIA_CONFIG = {
      supabaseUrl: 'https://SEU-PROJETO.supabase.co',
-     supabaseAnonKey: 'SUA-CHAVE-PUBLICA'
+     supabaseAnonKey: 'SUA-CHAVE-PUBLICA',
+     organizerEmail: 'EMAIL-DA-ORGANIZADORA'
    };
    ```
 
-6. Salve e publique os arquivos. Convidados verão as quantidades e confirmações globais. A organizadora abre `admin.html` e entra com o e-mail/senha do passo 3.
-
-**Segurança:** nunca use uma chave `service_role`, `secret` ou senha de administradora nos arquivos públicos. O SQL usa RLS para restringir a lista de nomes e as alterações a uma conta autorizada. As funções públicas de reserva e confirmação não exigem login; para um evento com exposição ampla, acrescente limitação de solicitações ou proteção antispam (por exemplo, Edge Function/Turnstile) antes da divulgação. Os nomes das reservas e confirmações são dados pessoais: informe os convidados sobre o uso dessas informações e exclua-os quando não forem mais necessários.
+6. Publique os arquivos no GitHub Pages. Faça testes reais usando **dois navegadores ou dois celulares diferentes**. O painel consultará os dados do Supabase; a senha da organizadora será validada pela autenticação do Supabase. **Nunca inclua `service_role` nem a senha de alguém nos arquivos públicos.**
+7. O controle do local é **manual pelo WhatsApp**. É preciso verificar no WhatsApp se a mensagem foi enviada e então marcar o status no painel. Apenas o status do envio é sincronizado no banco; o endereço digitado na área privada continua salvo no navegador da organizadora.
 
 ## Publicar no GitHub Pages
 
-1. Crie um repositório GitHub, por exemplo `cha-maria-helena`.
-2. Envie para a raiz do repositório `index.html`, `admin.html`, `styles.css`, `config.js`, `data.js`, `app.js`, `admin.js`, `supabase.sql` e a pasta `assets/`.
-3. Em **Settings → Pages**, use **Deploy from a branch**, **main**, pasta **/(root)**.
-4. Espere a publicação pelo próprio GitHub, abra a URL indicada em Pages e teste em dois aparelhos diferentes.
+Envie para a raiz do repositório `index.html`, `admin.html`, `styles.css`, `config.js`, `data.js`, `app.js`, `admin.js` e a pasta `assets/`. O SQL e este guia podem ficar fora da publicação, se preferir. Ative **Settings → Pages → Deploy from a branch → main / root**.
 
-## Personalizar
-
-- Textos, nome, data, localização e links: `index.html`.
-- Visual, tamanho e cores: `styles.css`.
-- Ursinha e balões vetoriais: `assets/ursinha.svg` e `assets/balloons.svg`.
-- Lista inicial de demonstração: `data.js` (`initialGifts`).
-- Lista inicial compartilhada: linhas `insert into ... baby_gifts` em `supabase.sql` (ou edite pelo painel depois da configuração).
-- Painel da organizadora: `admin.html`.
-
-**Observações:** o evento é sábado, **23/01/2027**. O convite não informa cidade/estado porque não foram fornecidos; revise o resultado do Google Maps. O horário no arquivo de calendário é 15h no horário local do calendário de quem importar.
+**Privacidade:** WhatsApps, nomes e respostas são dados pessoais. Compartilhe com os convidados que o telefone será usado para informar o local da festa, não para outros fins. Exclua os cadastros quando deixarem de ser necessários. As funções públicas de confirmação não exigem login; para um evento divulgado amplamente, considere proteção antispam e limites por IP antes da publicação.

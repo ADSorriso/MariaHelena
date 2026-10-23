@@ -1,0 +1,24 @@
+ACESSO COM SENHA - CONVITE MARIA HELENA
+
+1. No convite, abra o link Area da Organizadora ou acesse admin.html.
+2. Sem Supabase: crie uma senha de teste de pelo menos 8 caracteres.
+   O teste funciona SOMENTE neste navegador e nao protege o site em producao.
+3. Em producao: crie um projeto Supabase, execute supabase.sql e
+   crie uma conta em Authentication > Users.
+4. Autorize o UUID da conta da organizadora via tabela baby_admins.
+5. Configure supabaseUrl, supabaseAnonKey e organizerEmail em config.js.
+   A senha real e definida no Supabase, NUNCA no codigo do site.
+
+PAINEL DA ORGANIZADORA
+- Lista de presenca com nome, pessoas, WhatsApp e recados.
+- Aba de presentes com quantidade e marcacao dos itens concluidos.
+- Quem escolheu cada presente e quantidade reservada.
+- No painel de Presencas informe o local da festa (apenas no navegador da organizadora).
+- Clique Enviar local pelo WhatsApp na linha do convidado. A mensagem abre pronta,
+  mas a organizadora precisa enviar manualmente no WhatsApp.
+- Depois de enviar, clique Marcar como enviado. Filtre quem ainda precisa receber.
+- Exporte listas em CSV (contendo dados pessoais - mantenha em sigilo).
+
+ATENCAO: o endereco nao aparece no site publico nem no arquivo de calendario.
+A versao sem Supabase nao junta dados de celulares diferentes.
+Veja o passo a passo completo no README.md.

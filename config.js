@@ -1,9 +1,9 @@
-/*
-  COLOQUE AQUI AS INFORMAÇÕES PÚBLICAS DO PROJETO SUPABASE.
-  Sem elas, o convite funciona em modo demonstração (dados salvos só no navegador).
-  Nunca coloque a chave service_role ou secret key neste arquivo.
-*/
+/* Configuração de produção: preencha para autenticação real e listas compartilhadas.
+   Nunca coloque senhas, chaves secretas ou service_role neste arquivo. */
 window.MARIA_CONFIG = {
   supabaseUrl: '',
-  supabaseAnonKey: ''
+  supabaseAnonKey: '',
+  // E-mail da conta criada no Supabase Authentication > Users.
+  // Se preenchido, a tela pedirá somente a senha.
+  organizerEmail: ''
 };
