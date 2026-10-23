@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 460">
+<defs>
+ <radialGradient id="fur" cx="38%" cy="27%" r="85%"><stop stop-color="#ffe8cc"/><stop offset=".5" stop-color="#eec2a1"/><stop offset="1" stop-color="#c9957d"/></radialGradient>
+ <radialGradient id="ear" cx="40%" cy="35%" r="75%"><stop stop-color="#ffbed3"/><stop offset="1" stop-color="#d98ea5"/></radialGradient>
+ <linearGradient id="heart" x1=".08" x2=".92" y1="0" y2="1"><stop stop-color="#ffd8e5"/><stop offset=".48" stop-color="#f8a8c2"/><stop offset="1" stop-color="#e47d9e"/></linearGradient>
+ <linearGradient id="bow" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffdae7"/><stop offset=".5" stop-color="#fbb1ca"/><stop offset="1" stop-color="#d9769b"/></linearGradient>
+ <filter id="drop"><feGaussianBlur stdDeviation="5"/></filter>
+ <filter id="soft"><feGaussianBlur stdDeviation="2.3"/></filter>
+</defs>
+<ellipse cx="206" cy="437" rx="139" ry="15" fill="#c88fa6" opacity=".2" filter="url(#drop)"/>
+<!-- crown -->
+<g transform="translate(168 21) rotate(-10)">
+ <path d="M4 59 L2 8 25 28 43 0 59 28 88 7 81 61Z" fill="#e2ae63" stroke="#ba8746" stroke-width="3" stroke-linejoin="round"/>
+ <path d="M4 51H82V66H4Z" rx="4" fill="#f7d38c" stroke="#bc8d59" stroke-width="3"/>
+ <circle cx="2" cy="8" r="5" fill="#ffe9b4"/><circle cx="43" cy="1" r="5" fill="#ffe9b4"/><circle cx="88" cy="7" r="5" fill="#ffe9b4"/>
+ <circle cx="42" cy="57" r="7" fill="#ffb9ce"/>
+</g>
+<!-- ears -->
+<circle cx="89" cy="133" r="54" fill="url(#fur)" stroke="#ce9a7f" stroke-width="3"/>
+<circle cx="306" cy="133" r="54" fill="url(#fur)" stroke="#ce9a7f" stroke-width="3"/>
+<circle cx="91" cy="131" r="31" fill="url(#ear)" opacity=".75"/>
+<circle cx="304" cy="131" r="31" fill="url(#ear)" opacity=".75"/>
+<!-- body and feet -->
+<ellipse cx="197" cy="323" rx="118" ry="118" fill="url(#fur)" stroke="#d6a58b" stroke-width="3"/>
+<ellipse cx="97" cy="374" rx="64" ry="58" transform="rotate(-20 97 374)" fill="url(#fur)" stroke="#d6a58b" stroke-width="3"/>
+<ellipse cx="303" cy="374" rx="64" ry="58" transform="rotate(18 303 374)" fill="url(#fur)" stroke="#d6a58b" stroke-width="3"/>
+<ellipse cx="92" cy="383" rx="43" ry="36" fill="#f9d2c6"/>
+<ellipse cx="306" cy="383" rx="43" ry="36" fill="#f9d2c6"/>
+<g fill="#eaa6aa" opacity=".86">
+ <ellipse cx="92" cy="393" rx="17" ry="13"/><ellipse cx="66" cy="372" rx="7" ry="9"/><ellipse cx="85" cy="362" rx="7" ry="9"/><ellipse cx="107" cy="362" rx="7" ry="9"/><ellipse cx="125" cy="373" rx="7" ry="9"/>
+ <ellipse cx="306" cy="393" rx="17" ry="13"/><ellipse cx="280" cy="373" rx="7" ry="9"/><ellipse cx="300" cy="362" rx="7" ry="9"/><ellipse cx="322" cy="362" rx="7" ry="9"/><ellipse cx="338" cy="373" rx="7" ry="9"/>
+</g>
+<!-- head -->
+<ellipse cx="198" cy="177" rx="125" ry="126" fill="url(#fur)" stroke="#ce9d81" stroke-width="3"/>
+<ellipse cx="157" cy="192" rx="16" ry="22" fill="#2e201d"/>
+<ellipse cx="240" cy="192" rx="16" ry="22" fill="#2e201d"/>
+<circle cx="153" cy="184" r="5" fill="white"/><circle cx="236" cy="185" r="5" fill="white"/>
+<ellipse cx="119" cy="223" rx="25" ry="17" fill="#e99ca7" opacity=".42" filter="url(#soft)"/>
+<ellipse cx="281" cy="223" rx="25" ry="17" fill="#e99ca7" opacity=".42" filter="url(#soft)"/>
+<ellipse cx="197" cy="237" rx="59" ry="44" fill="#fff0db" stroke="#e4bda8" stroke-width="2"/>
+<path d="M181 218 Q197 206 213 218 Q213 229 197 236 Q181 230 181 218Z" fill="#533631"/>
+<path d="M197 236 v12 M197 248 q-13 14 -26 0 M197 248 q13 14 26 0" fill="none" stroke="#68453d" stroke-width="4" stroke-linecap="round"/>
+<!-- hair bow -->
+<g transform="translate(66 72) rotate(-17)">
+ <path d="M44 30C3 -10 -4 42 7 54c14 16 43 -2 45 -9 3 11 39 20 47 -2 7 -22 -26 -44 -47 -12Z" fill="url(#bow)" stroke="#d9849f" stroke-width="3"/>
+ <path d="M50 43 Q25 22 10 36 M55 42 Q76 28 89 38" fill="none" stroke="#ffeaf0" stroke-width="4" opacity=".8"/>
+ <ellipse cx="51" cy="41" rx="12" ry="14" fill="#f2a8c1" stroke="#d8859f" stroke-width="3"/>
+ <path d="M45 52 33 72 51 66 62 80 62 52" fill="url(#bow)" stroke="#d8859f" stroke-width="2"/>
+</g>
+<!-- pink heart pillow -->
+<path d="M198 364 C146 333 135 310 146 290 C160 263 185 276 199 289 C213 275 237 264 253 290 C271 322 233 346 198 364Z" fill="url(#heart)" stroke="#d7839e" stroke-width="4"/>
+<path d="M164 295 Q173 284 188 293" fill="none" stroke="#ffe8ed" stroke-width="7" stroke-linecap="round" opacity=".8"/>
+<!-- paws around heart -->
+<ellipse cx="116" cy="321" rx="36" ry="30" transform="rotate(-22 116 321)" fill="url(#fur)" stroke="#d4a184" stroke-width="3"/>
+<ellipse cx="279" cy="321" rx="36" ry="30" transform="rotate(22 279 321)" fill="url(#fur)" stroke="#d4a184" stroke-width="3"/>
+<g fill="#b87772" opacity=".5"><circle cx="102" cy="316" r="4"/><circle cx="117" cy="309" r="4"/><circle cx="131" cy="317" r="4"/><circle cx="267" cy="315" r="4"/><circle cx="280" cy="310" r="4"/><circle cx="293" cy="316" r="4"/></g>
+</svg>
