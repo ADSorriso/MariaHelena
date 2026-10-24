@@ -91,6 +91,19 @@
 .native-music-player .manual-player summary{padding:4px 0}
 .manual-player-content p{margin:0;font-size:11px}
 
+
+/* Controle musical agora faz parte dos três ícones interativos do convite. */
+.action-buttons{gap:clamp(10px,3vw,17px);align-items:flex-start}
+.music-action .action-bubble{position:relative}
+.music-action .action-bubble svg{grid-area:1/1}
+.music-action .pause-icon{display:none}
+.music-action.playing .music-icon{display:none}
+.music-action.playing .pause-icon{display:block;fill:currentColor;stroke:none}
+.music-action.playing .action-bubble{background:linear-gradient(135deg,#e9a5be,#ae607f);box-shadow:0 4px 0 #fff,0 6px 14px #b178913d,inset 0 0 0 2px #f3d0db}
+.invite-music-feedback{margin:13px auto 0;max-width:285px;font-size:11px}
+@media(max-width:560px){.action-buttons{gap:clamp(8px,3.2vw,13px)}.action-item{min-width:0;flex:0 1 78px}}
+@media(max-width:360px){.action-bubble{width:56px;height:56px}}
+
 </style>
   <script src="config.js"></script>
   
@@ -109,20 +122,11 @@
   <div class="site-bg" aria-hidden="true"><span class="bg-glow glow-left"></span><span class="bg-glow glow-right"></span></div>
   <div class="page-frame">
     <header class="topbar">
-      <button class="music-toggle" id="musicToggle" type="button" aria-label="Tocar música" aria-pressed="false" title="Tocar música — Pra Você Guardei o Amor">
-        <svg class="music-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M9 17V5l12-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-        <svg class="pause-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="4" width="5" height="16" rx="1"/><rect x="14" y="4" width="5" height="16" rx="1"/></svg>
-        <span class="music-dot" aria-hidden="true"></span>
-      </button>
       <span class="topbar-mark">✿</span>
       <span>Um dia de muito amor</span>
       <button class="share-button" type="button" id="shareBtn" aria-label="Compartilhar convite" title="Compartilhar convite"><svg><use href="#i-share"/></svg></button>
     </header>
-    <p class="music-feedback global-music-feedback" id="musicFeedback" role="status" aria-live="polite" hidden></p>
-    <div class="native-music-player">
-      <audio id="backgroundMusic" controls preload="none" playsinline loop aria-label="Pra Você Guardei o Amor — música do convite"></audio>
-      <p class="inline-audio-help" style="font-size:11px;color:#965d75;margin:6px 0;">Toque em ▶ para ouvir. A música está dentro do convite.</p>
-    </div>
+    <audio id="backgroundMusic" preload="none" playsinline loop hidden aria-label="Pra Você Guardei o Amor — música do convite"></audio>
     <main class="invitation" id="invitation">
       <div class="decor stars star-one" aria-hidden="true">✦</div>
       <div class="decor stars star-two" aria-hidden="true">✧</div>
@@ -148,7 +152,6 @@
           </button>
           <p class="click-instruction">Toque no selo para abrir <span>♡</span></p>
           <p class="music-hint">♫ O convite abre ao som de uma música especial</p>
-          <button class="music-play-button" id="musicPlayButton" type="button">♫ Tocar música</button>
           <span class="hint-pill">Preparado com amor para você</span>
         </div>
       </section>
@@ -170,7 +173,15 @@
           <div class="action-buttons">
             <button class="action-item" type="button" data-go="rsvp"><span class="action-bubble"><svg><use href="#i-check"/></svg></span><span>Confirmar<br>presença</span></button>
             <button class="action-item" type="button" data-go="gifts"><span class="action-bubble"><svg><use href="#i-gift"/></svg></span><span>Lista de<br>presentes</span></button>
+            <button class="action-item music-action" id="musicToggle" type="button" aria-label="Tocar música" aria-pressed="false" title="Tocar ou pausar música">
+              <span class="action-bubble" aria-hidden="true">
+                <svg class="music-icon" viewBox="0 0 24 24"><path d="M9 17V5l12-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                <svg class="pause-icon" viewBox="0 0 24 24"><rect x="5" y="4" width="5" height="16" rx="1"/><rect x="14" y="4" width="5" height="16" rx="1"/></svg>
+              </span>
+              <span id="musicActionLabel">Tocar<br>música</span>
+            </button>
           </div>
+          <p class="music-feedback invite-music-feedback" id="musicFeedback" role="status" aria-live="polite" hidden></p>
           <div class="event-address location-notice"><span>Onde será?</span><strong>Assim que confirmada a presença, o local será enviado por WhatsApp.</strong><span>Informe seu telefone na confirmação para receber os detalhes da festa. 💗</span></div>
           <div class="bottom-links"><button type="button" id="calendarBtn">♡ Adicionar ao calendário</button></div><a class="organizer-mini" href="admin.html">🔒 Área da organizadora</a>
         </div>
@@ -242,7 +253,7 @@
  'use strict';
  const a=document.getElementById('backgroundMusic');
  const top=document.getElementById('musicToggle');
- const cover=document.getElementById('musicPlayButton');
+ const inviteLabel=document.getElementById('musicActionLabel');
  const feedback=document.getElementById('musicFeedback');
  const announce=document.getElementById('musicAnnounce');
  let created=false, pending=false, url=null;
@@ -253,7 +264,7 @@
    top.setAttribute('aria-pressed',String(playing));
    top.setAttribute('aria-label',playing?'Pausar música':'Tocar música');
    top.title=playing?'Pausar música':'Tocar música';
-   cover.textContent=playing?'❚❚ Pausar música':'♫ Tocar música';
+   inviteLabel.innerHTML=playing?'Pausar<br>música':'Tocar<br>música';
    announce.textContent=playing?'Música tocando':'Música pausada';
  }
  function prepare(){
@@ -280,15 +291,14 @@
      if(p&&typeof p.then==='function'){
        p.then(()=>{pending=false;notice('');state();})
         .catch(err=>{pending=false;state();console.error('Erro de reprodução:',err);
-          if(err.name==='NotAllowedError')notice('Para ouvir a música, toque em ▶ no controle de áudio acima.');
-          else notice('O áudio não iniciou: '+(err.message||err.name||'falha desconhecida')+'. Toque em ▶ novamente.');
+          if(err.name==='NotAllowedError')notice('O navegador bloqueou o áudio. Toque no ícone de música novamente.');
+          else notice('O áudio não iniciou: '+(err.message||err.name||'falha desconhecida')+'. Toque no ícone de música novamente.');
         });
      }else{pending=false;state();}
    }catch(err){pending=false;state();notice('Erro ao preparar a música: '+err.message);console.error(err);}
  }
  function toggle(){if(a.paused)play();else{a.pause();state();notice('');}}
  top.addEventListener('click',toggle);
- cover.addEventListener('click',toggle);
  a.addEventListener('play',state);
  a.addEventListener('playing',()=>{pending=false;state();notice('');});
  a.addEventListener('pause',state);
