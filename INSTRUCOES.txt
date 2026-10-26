@@ -1,0 +1,25 @@
+CONVITE DA MARIA HELENA • Supabase + GitHub Pages
+
+Configuração preparada com a Project URL e a chave PUBLICÁVEL recebidas.
+NUNCA adicione sb_secret_/service_role/senhas ao GitHub.
+
+SEM BAIXAR ARQUIVOS (edição no site do GitHub)
+1. Abra ADSorriso/MariaHelena no GitHub.
+2. Add file > Create new file > config.js (na mesma pasta do index.html).
+3. Cole o conteúdo do config.js. Commit changes.
+4. O index.html atual já inclui <script src="config.js"></script> no head.
+5. Para o painel, confira se admin.html também inclui config.js, data.js e admin.js.
+6. Abra o convite e confira que não aparece "Modo de demonstração".
+7. Entre em admin.html com o e-mail autorizado e senha do Supabase.
+8. Teste confirmação e reserva pelo celular; verifique as tabelas no Supabase.
+
+Nesta pasta também estão versões completas dos arquivos caso seja necessário publicar depois.
+O SQL de referência já foi executado pelo usuário; não é necessário reexecutá-lo.
+
+OBSERVAÇÕES
+- Regras RLS permitem visitantes verem a lista de presentes, não as listas privadas.
+- As funções SQL recebem um WhatsApp com DDD em cada reserva e impedem reservas
+  superiores à quantidade disponível em transações concorrentes.
+- Sem SMS/OTP não é possível confirmar que o telefone pertence ao convidado.
+- O botão WhatsApp abre a conversa com a mensagem pronta, mas não envia automaticamente.
+- Não foi possível publicar no GitHub nem testar a base online sem conexão aos serviços.

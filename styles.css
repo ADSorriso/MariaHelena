@@ -37,3 +37,42 @@
 .admin-whatsapp{border-color:#9ed7ba!important;background:#f0fff5!important;color:#23754b!important}
 .admin-private-location .tiny-note{margin:9px 0 0;font-size:11px}
 @media(max-width:560px){.action-buttons{gap:26px}.location-notice{max-width:295px;margin-top:18px}.admin-private-location .location-inputs{align-items:stretch}.admin-private-location input{min-width:100%}}
+
+/* Trilha sonora do convite — acessível e discreta no topo de todas as telas. */
+.music-toggle{position:absolute;left:18px;top:16px;height:38px;width:38px;display:grid;place-items:center;background:#fffbfbee;border:1px solid #efcad7;border-radius:50%;color:#af6d83;box-shadow:0 5px 12px #bf8c9e20;z-index:20;transition:background .2s,box-shadow .2s,transform .2s}
+.music-toggle:hover{transform:translateY(-2px);box-shadow:0 7px 15px #bf8c9e35}
+.music-toggle svg{width:19px;height:19px;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.music-toggle .pause-icon{display:none;fill:currentColor;stroke:none}
+.music-toggle.playing{background:#e8aec3;color:#fff;border-color:#d997ad}
+.music-toggle.playing .music-icon{display:none}
+.music-toggle.playing .pause-icon{display:block}
+.music-dot{position:absolute;right:1px;top:1px;width:8px;height:8px;background:#78b794;border:2px solid #fff;border-radius:50%;opacity:0}
+.music-toggle.playing .music-dot{opacity:1}
+.music-hint{margin:-11px 0 17px;color:#b17f92;font-size:11px;line-height:1.5;letter-spacing:.01em}
+@media (max-width:370px){.topbar{font-size:10px;letter-spacing:.075em}.topbar .music-toggle{left:9px}.topbar .share-button{right:9px}}
+@media (prefers-reduced-motion:reduce){.music-toggle{transition:none}}
+
+.music-feedback{font-size:12px;line-height:1.5;color:#a74168;max-width:300px;margin:0 auto 12px;padding:8px 10px;border:1px solid #e4abc0;border-radius:10px;background:#fff7fa}
+.music-feedback[hidden]{display:none!important}
+
+/* Player robusto: alternativa manual nativa e mensagens visiveis em celulares. */
+.music-play-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;margin:-4px auto 15px;padding:11px 19px;border:1px solid #dc9eb5;border-radius:999px;background:#f7d6e1;color:#93445d;font:600 13px 'DM Sans',sans-serif;box-shadow:0 4px 10px #dc9eb52e;cursor:pointer;min-height:42px}
+.music-play-button:active{transform:scale(.98)}
+.global-music-feedback{position:fixed;z-index:999;top:65px;left:50%;transform:translateX(-50%);width:min(calc(100vw - 24px),365px);font-size:12px;font-family:'DM Sans',sans-serif;text-align:center;box-shadow:0 10px 30px #bd8f9d40}
+.manual-player{position:relative;z-index:24;margin:0 auto;width:min(calc(100% - 20px),350px);border-radius:0 0 13px 13px;background:#fff7fa;border:1px solid #efcad7;border-top:0;text-align:center;color:#984e67;font:500 12px 'DM Sans',sans-serif}
+.manual-player summary{padding:9px 10px;cursor:pointer;list-style:none;user-select:none}
+.manual-player summary::-webkit-details-marker{display:none}
+.manual-player summary::after{content:' ▾';font-size:14px}
+.manual-player[open] summary::after{content:' ▴'}
+.manual-player-content{display:flex;flex-direction:column;align-items:center;gap:10px;padding:5px 12px 14px}
+.manual-player audio{display:block;width:100%;max-width:310px;height:50px}
+.manual-player a{color:#9c4263;font-size:12px;text-decoration:underline}
+@media(max-width:360px){.manual-player{width:calc(100% - 18px)}.music-play-button{font-size:12px}}
+
+/* Controles nativos sempre visíveis: funcionam mesmo nos navegadores móveis
+   que impedem o início por JavaScript e permitem verificar a duração. */
+.native-music-player{position:relative;z-index:24;margin:0 auto 2px;padding:6px 10px 4px;width:min(calc(100% - 20px),348px);text-align:center;background:#fff7fa;border:1px solid #efcad7;border-top:0;border-radius:0 0 15px 15px}
+.native-music-player>audio{display:block;max-width:320px;width:100%;height:42px;margin:auto}
+.native-music-player .manual-player{border:0;background:transparent;width:100%;font-size:11px}
+.native-music-player .manual-player summary{padding:4px 0}
+.manual-player-content p{margin:0;font-size:11px}

@@ -175,12 +175,12 @@
     const search = clean($('#reservationSearch').value);
     const shown = reservations.filter(r => {
       const gift = gifts.find(g => g.id === r.gift_id);
-      return clean(r.guest_name + ' ' + (gift?.name || '')).includes(search);
+      return clean(r.guest_name + ' ' + (r.guest_phone || '') + ' ' + (gift?.name || '')).includes(search);
     });
     $('#reservationsAdminList').innerHTML = shown.length ? shown.map(r => {
       const g = gifts.find(x => x.id === r.gift_id);
       return `<article class="admin-item"><div><div class="admin-item-name">🎁 ${safe(r.guest_name)}</div>
-      <div class="admin-item-sub">${Number(r.quantity)} × ${safe(g?.name || 'Presente removido')} · ${niceDate(r.created_at)}</div></div>
+      <div class="admin-item-sub">${Number(r.quantity)} × ${safe(g?.name || 'Presente removido')} · WhatsApp: ${safe(r.guest_phone || 'não informado')} · ${niceDate(r.created_at)}</div></div>
       <div class="admin-buttons"><button class="admin-small-btn danger" data-action="delete-reservation" data-id="${safe(r.id)}">Cancelar reserva</button></div></article>`;
     }).join('') : '<p class="admin-empty">Nenhuma reserva encontrada.</p>';
   }
