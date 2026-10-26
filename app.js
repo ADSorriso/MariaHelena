@@ -4,6 +4,7 @@
   const store = window.MariaStore;
   const screens = {cover:$('#coverScreen'),invite:$('#inviteScreen'),gifts:$('#giftsScreen'),rsvp:$('#rsvpScreen')};
   let currentScreen='cover', gifts=[], currentCategory='Todos', chosenGift=null, busy=false, toastTimer;
+  let giftRefreshInFlight=false, giftLastSyncAt=0, giftSignature='';
   const iconCategory={'Fraldas':'🧷','Higiene':'🫧','Enxoval':'🧸','Roupinhas':'👶','Cuidados':'🌷','Amamentação':'🍼','Acessórios':'🎀','Alimentação':'🍼'};
   const safe = s => String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   function toast(message){const t=$('#toast');t.textContent=message;t.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('visible'),3800);}
@@ -12,7 +13,10 @@
     currentScreen=screen;
     Object.entries(screens).forEach(([name,el])=>el.hidden=name!==screen);
     window.scrollTo({top:0,behavior:'smooth'});
-    if(screen==='gifts')refreshGifts();
+    if(screen==='gifts'){
+      if(gifts.length && !$('#giftList .gift-card')){showGiftFilters();showGifts();}
+      refreshGifts({silent:gifts.length>0});
+    }
     if(screen==='rsvp')refreshRsvp();
   }
   $('#openEnvelope').addEventListener('click', () => {
@@ -53,14 +57,44 @@
     }).join(''):'<p class="loading-state">Nenhum presente nesta categoria.</p>';
     if(!store.isCloud){$('#giftList').insertAdjacentHTML('beforeend','<p class="tiny-info"><strong>Modo demonstração:</strong> as escolhas são salvas somente neste navegador. Para sincronizar entre convidados, configure o Supabase.</p>');}
   }
-  async function refreshGifts(){
-    $('#giftList').innerHTML='<p class="loading-state">Organizando os presentinhos... 🎀</p>';
-    try{gifts=await store.listGifts();showGiftFilters();showGifts();}catch(err){$('#giftList').innerHTML='<p class="loading-state">Não foi possível carregar a lista. Verifique sua conexão e tente novamente.</p>';toast(err.message);}
+  // Atualiza sem apagar os cartões já visíveis. Evita o efeito de tela piscando
+  // e mantém a última lista válida quando a rede ou Supabase oscila.
+  async function refreshGifts({silent=false}={}){
+    if(giftRefreshInFlight)return;
+    giftRefreshInFlight=true;
+    const hadData=gifts.length>0;
+    const list=$('#giftList');
+    if(!hadData && !silent && currentScreen==='gifts'){
+      list.innerHTML='<p class="loading-state">Organizando os presentinhos... 🎀</p>';
+    }
+    try{
+      const fresh=await store.listGifts();
+      if(!Array.isArray(fresh))throw new Error('Resposta inesperada ao carregar presentes.');
+      const signature=JSON.stringify(fresh.map(g=>[g.id,g.name,g.category,g.description,g.quantity,g.reserved,g.completed,g.sort_order]));
+      giftLastSyncAt=Date.now();
+      if(signature!==giftSignature || !hadData){
+        gifts=fresh;
+        giftSignature=signature;
+        if(currentScreen==='gifts'){showGiftFilters();showGifts();}
+      }else if(currentScreen==='gifts' && !list.querySelector('.gift-card') && fresh.length){
+        showGiftFilters();showGifts();
+      }
+    }catch(err){
+      console.warn('Atualização dos presentes não concluída. Mantendo informações anteriores.',err);
+      if(!hadData && currentScreen==='gifts'){
+        list.innerHTML='<div class="loading-state" role="status">Não conseguimos carregar os presentes agora. Verifique a internet e tente novamente.<p><button type="button" class="gift-action" data-retry-gifts>↻ Tentar novamente</button></p></div>';
+      }
+      // Atualizações periódicas não mostram notificações de erro temporário.
+      // A reserva, quando efetuada manualmente, ainda mostra o erro verdadeiro.
+    }finally{
+      giftRefreshInFlight=false;
+    }
   }
   $('#giftFilters').addEventListener('click',e=>{
     const b=e.target.closest('[data-category]');if(!b)return;currentCategory=b.dataset.category;showGiftFilters();showGifts();
   });
   $('#giftList').addEventListener('click',e=>{
+    if(e.target.closest('[data-retry-gifts]')){refreshGifts();return;}
     const button=e.target.closest('[data-gift-id]');if(!button)return;
     chosenGift=gifts.find(g=>g.id===button.dataset.giftId);if(!chosenGift||isDone(chosenGift))return;
     const amount=Math.min(availability(chosenGift),20);
@@ -109,5 +143,20 @@
     busy=true;$('#rsvpSubmit').disabled=true;
     try{await store.saveRsvp({name,attending,people,message,phone});localStorage.setItem('maria_helena_my_rsvp_v1',JSON.stringify({guest_name:name,attending,total_people:attending?people:0,message,phone}));toast(attending?'Presença confirmada! A organizadora enviará o local pelo WhatsApp. 💗':'Sua resposta foi recebida. Obrigada por avisar!');$('#rsvpSubmit').textContent='♡ Atualizar minha resposta';await refreshRsvp();}catch(err){toast(err.message);}finally{busy=false;$('#rsvpSubmit').disabled=false;}
   });
-  if(store.isCloud){setInterval(()=>{if(currentScreen==='gifts')refreshGifts();else if(currentScreen==='rsvp')store.getRsvpTotals().then(x=>{if(currentScreen==='rsvp')$('#rsvpTotal').innerHTML=`💗 <strong>${x.people||0} pessoas confirmadas</strong> até agora`;}).catch(()=>{});},25000);}
+  if(store.isCloud){
+    setInterval(()=>{
+      if(document.visibilityState==='hidden')return;
+      if(currentScreen==='gifts')refreshGifts({silent:true});
+      else if(currentScreen==='rsvp')store.getRsvpTotals().then(x=>{
+        if(currentScreen==='rsvp')$('#rsvpTotal').innerHTML=`💗 <strong>${x.people||0} pessoas confirmadas</strong> até agora`;
+      }).catch(()=>{});
+    },45000);
+    const refreshWhenBack=()=>{
+      if(currentScreen==='gifts' && document.visibilityState!=='hidden' && Date.now()-giftLastSyncAt>30000){
+        refreshGifts({silent:gifts.length>0});
+      }
+    };
+    document.addEventListener('visibilitychange',refreshWhenBack);
+    window.addEventListener('online',refreshWhenBack);
+  }
 })();

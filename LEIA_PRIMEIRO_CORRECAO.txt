@@ -1,0 +1,29 @@
+SITE MARIA HELENA - CORREÇÃO DO PISCAR NA LISTA DE PRESENTES
+26/10/2026
+
+PROBLEMA CORRIGIDO
+- Antes o app.js apagava todos os cartões de presentes a cada 25 segundos,
+  substituindo-os por 'Organizando os presentinhos...' enquanto buscava o Supabase.
+- Se ocorresse erro temporário de conexão, o erro aparecia e desaparecia.
+- Agora atualiza em segundo plano sem limpar a tela; mantém a última lista
+  válida se a conexão falhar; só redesenha ao mudar algo.
+- Atualização a cada 45 segundos somente enquanto a aba está visível.
+- Na primeira carga com falha, exibe botão 'Tentar novamente'.
+
+COMO APLICAR (OPÇÃO MAIS SEGURA)
+1. No GitHub, repositório ADSorriso/MariaHelena, abra app.js.
+2. Substitua apenas esse arquivo pelo app.js corrigido deste ZIP.
+3. Faça Commit changes, confira Actions e recarregue com Ctrl+F5.
+
+SE QUISER SUBSTITUIR O SITE TODO
+Envie os arquivos desta pasta na RAIZ do repositório pelo Upload files,
+sem criar subpasta. O index.html do pacote também inclui um sufixo na
+referência ao app.js para impedir cache antigo. NÃO envie o ZIP fechado.
+
+IMPORTANTE
+- NÃO execute APLICAR_NO_SUPABASE.sql outra vez para esta correção.
+- NÃO exclua tabelas, presenças ou reservas do Supabase.
+- A música, os 35 presentes e o painel da organizadora foram preservados.
+- Isso corrige o comportamento identificado no pacote anterior. A versão
+  publicada no GitHub não pôde ser lida diretamente neste ambiente.
+- Em teste de navegador com falha de rede simulada, os cartões não sumiram.
