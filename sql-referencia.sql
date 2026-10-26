@@ -1,1 +1,0 @@
--- Banco já criado no Supabase. Atualizações idempotentes em APLICAR_NO_SUPABASE.sql.
