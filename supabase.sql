@@ -1,2 +1,0 @@
--- PARA ATUALIZAR O BANCO EXISTENTE, EXECUTE O ARQUIVO APLICAR_NO_SUPABASE.sql
--- Este arquivo não é necessário para publicar os HTML no GitHub Pages.
