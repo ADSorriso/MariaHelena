@@ -4,7 +4,7 @@
   const store = window.MariaStore;
   const screens = {cover:$('#coverScreen'),invite:$('#inviteScreen'),gifts:$('#giftsScreen'),rsvp:$('#rsvpScreen')};
   let currentScreen='cover', gifts=[], currentCategory='Todos', chosenGift=null, busy=false, toastTimer;
-  const iconCategory={'Fraldas':'🧷','Higiene':'🫧','Enxoval':'🧸','Roupinhas':'👶','Cuidados':'🌷'};
+  const iconCategory={'Fraldas':'🧷','Higiene':'🫧','Enxoval':'🧸','Roupinhas':'👶','Cuidados':'🌷','Amamentação':'🍼','Acessórios':'🎀','Alimentação':'🍼'};
   const safe = s => String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   function toast(message){const t=$('#toast');t.textContent=message;t.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('visible'),3800);}
   function go(screen){
@@ -15,10 +15,15 @@
     if(screen==='gifts')refreshGifts();
     if(screen==='rsvp')refreshRsvp();
   }
-  $('#openEnvelope').addEventListener('click',()=>{
-    const btn=$('#openEnvelope');if(btn.classList.contains('opening'))return;
+  $('#openEnvelope').addEventListener('click', () => {
+    const btn=$('#openEnvelope');
+    if(btn.classList.contains('opening')) return;
+    if(window.MariaAudio) window.MariaAudio.play();
     btn.classList.add('opening');
-    setTimeout(()=>{btn.classList.remove('opening');go('invite');},window.matchMedia('(prefers-reduced-motion:reduce)').matches?60:750);
+    setTimeout(() => {
+      btn.classList.remove('opening');
+      go('invite');
+    },window.matchMedia('(prefers-reduced-motion:reduce)').matches?60:750);
   });
   $('#backCover').addEventListener('click',()=>go('cover'));
   document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>go(el.dataset.go)));
@@ -62,16 +67,18 @@
     $('#chosenGiftName').textContent=chosenGift.name;
     $('#reserveQty').innerHTML=Array.from({length:amount},(_,i)=>`<option value="${i+1}">${i+1} ${i?'unidades':'unidade'}</option>`).join('');
     $('#reserveName').value=localStorage.getItem('maria_helena_last_name')||'';
+    $('#reservePhone').value=$('#guestPhone').value||localStorage.getItem('maria_helena_last_phone')||'';
     $('#giftDialog').showModal();
   });
   $('#closeGiftDialog').addEventListener('click',()=>$('#giftDialog').close());
   $('#giftDialog').addEventListener('click',e=>{if(e.target===$('#giftDialog'))$('#giftDialog').close();});
   $('#reserveForm').addEventListener('submit',async e=>{
     e.preventDefault();if(busy||!chosenGift)return;
-    const name=$('#reserveName').value.trim(),quantity=Number($('#reserveQty').value);
+    const name=$('#reserveName').value.trim(),quantity=Number($('#reserveQty').value),phone=$('#reservePhone').value.replace(/\D/g,'').replace(/^55(?=\d{10,11}$)/,'');
     if(name.length<2){toast('Digite seu nome, por favor.');return;}
+    if(!/^([1-9][0-9])(?:[2-9][0-9]{7}|9[0-9]{8})$/.test(phone)){toast('Informe WhatsApp válido com DDD.');return;}
     busy=true;$('#reserveSubmit').disabled=true;$('#reserveSubmit').textContent='Reservando...';
-    try{await store.reserveGift({id:chosenGift.id,name,quantity});localStorage.setItem('maria_helena_last_name',name);$('#giftDialog').close();toast('Presente reservado com carinho! Obrigada 💗');await refreshGifts();}catch(err){toast(err.message);await refreshGifts();}
+    try{await store.reserveGift({id:chosenGift.id,name,quantity,phone});localStorage.setItem('maria_helena_last_name',name);localStorage.setItem('maria_helena_last_phone',phone);$('#giftDialog').close();toast('Presente reservado com carinho! Obrigada 💗');await refreshGifts();}catch(err){toast(err.message);await refreshGifts();}
     finally{busy=false;$('#reserveSubmit').disabled=false;$('#reserveSubmit').textContent='Confirmar presente ♡';}
   });
   // O número é necessário somente para quem irá ao evento.

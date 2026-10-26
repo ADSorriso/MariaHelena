@@ -1,25 +1,41 @@
-CONVITE DA MARIA HELENA • Supabase + GitHub Pages
+CHA DE BEBE MARIA HELENA - PACOTE COMPLETO (26/10/2026)
 
-Configuração preparada com a Project URL e a chave PUBLICÁVEL recebidas.
-NUNCA adicione sb_secret_/service_role/senhas ao GitHub.
+CONTEUDO NA RAIZ DO ZIP:
+index.html    = convite original, capa sem texto grande e musica embutida, tres icones
+admin.html    = painel privado da organizadora
+config.js     = URL + chave publica Supabase (NUNCA cole service_role aqui)
+data.js       = confirma presenca, reserva com WhatsApp, login admin
+app.js        = navegacao, lista de presentes e acoes do convite
+admin.js      = funcoes administrativas, exportacao de listas e WhatsApp
+styles.css    = design rosa original
+APLICAR_NO_SUPABASE.sql = migração segura para lista de 35 presentes
+supabase.sql / sql-referencia.sql = notas (nao substituem a migracao)
+.nojekyll = nao compilar com Jekyll no GitHub Pages
 
-SEM BAIXAR ARQUIVOS (edição no site do GitHub)
-1. Abra ADSorriso/MariaHelena no GitHub.
-2. Add file > Create new file > config.js (na mesma pasta do index.html).
-3. Cole o conteúdo do config.js. Commit changes.
-4. O index.html atual já inclui <script src="config.js"></script> no head.
-5. Para o painel, confira se admin.html também inclui config.js, data.js e admin.js.
-6. Abra o convite e confira que não aparece "Modo de demonstração".
-7. Entre em admin.html com o e-mail autorizado e senha do Supabase.
-8. Teste confirmação e reserva pelo celular; verifique as tabelas no Supabase.
+ORDEM CORRETA:
+1. Supabase > projeto cha-maria-helena > SQL Editor > New query.
+   Abra APLICAR_NO_SUPABASE.sql e execute o texto INTEIRO; confira 35 e 226.
+   A migração NAO deleta presencas nem reservas anteriores; itens antigos
+   ficam arquivados e podem ser consultados via SQL.
+2. GitHub > ADSorriso/MariaHelena > main > Add file > Upload files.
+   Envie OS ARQUIVOS DA RAIZ, nao a pasta do ZIP e nao o proprio ZIP.
+   Substitua index.html, admin.html, config.js, data.js, app.js,
+   admin.js, styles.css. Os outros .txt/.sql sao apenas documentacao.
+   Confirme Commit changes.
+3. Github Actions: confira que a ultima implantacao concluiu em verde.
+4. Teste o site, uma presenca, um presente, bloqueio duplicado e painel.
+   Confira os valores no Supabase. Mantenha os dados de teste identificados
+   para removê-los no painel antes de convidar pessoas de verdade.
+5. Troque a senha do usuario administrador no Supabase: ela apareceu
+   em uma imagem anterior. Nao a envie a terceiros.
 
-Nesta pasta também estão versões completas dos arquivos caso seja necessário publicar depois.
-O SQL de referência já foi executado pelo usuário; não é necessário reexecutá-lo.
+NAO SUBA CHAVES SECRETAS. A chave publishable do config.js pode ser publica,
+mas o Supabase precisa manter as politicas RLS habilitadas.
 
-OBSERVAÇÕES
-- Regras RLS permitem visitantes verem a lista de presentes, não as listas privadas.
-- As funções SQL recebem um WhatsApp com DDD em cada reserva e impedem reservas
-  superiores à quantidade disponível em transações concorrentes.
-- Sem SMS/OTP não é possível confirmar que o telefone pertence ao convidado.
-- O botão WhatsApp abre a conversa com a mensagem pronta, mas não envia automaticamente.
-- Não foi possível publicar no GitHub nem testar a base online sem conexão aos serviços.
+O endereco da festa NAO aparece no convite. No admin, o local e salvo
+APENAS no navegador do administrador, e o WhatsApp e aberto com o texto
+preparado para envio manual.
+
+OBSERVACAO: os arquivos foram reconstruidos a partir do pacote anterior
+que geramos. Nao foi possivel extrair diretamente a ultima revisao
+publica do repositorio GitHub para realizar comparacao automatica.

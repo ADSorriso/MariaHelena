@@ -180,7 +180,7 @@
     $('#reservationsAdminList').innerHTML = shown.length ? shown.map(r => {
       const g = gifts.find(x => x.id === r.gift_id);
       return `<article class="admin-item"><div><div class="admin-item-name">🎁 ${safe(r.guest_name)}</div>
-      <div class="admin-item-sub">${Number(r.quantity)} × ${safe(g?.name || 'Presente removido')} · WhatsApp: ${safe(r.guest_phone || 'não informado')} · ${niceDate(r.created_at)}</div></div>
+      <div class="admin-item-sub">${Number(r.quantity)} × ${safe(g?.name || r.baby_gifts?.name || 'Presente antigo')} · WhatsApp: ${safe(r.guest_phone || 'não informado')} · ${niceDate(r.created_at)}</div></div>
       <div class="admin-buttons"><button class="admin-small-btn danger" data-action="delete-reservation" data-id="${safe(r.id)}">Cancelar reserva</button></div></article>`;
     }).join('') : '<p class="admin-empty">Nenhuma reserva encontrada.</p>';
   }
@@ -233,7 +233,7 @@
     gifts.map(g => [g.name,g.category,g.quantity,g.reserved,Math.max(0,g.quantity-g.reserved),isDone(g)?'Sim':'Não'])));
   $('#exportReservations').addEventListener('click', () => exportCsv('maria-helena-reservas.csv',
     ['Convidado','Presente','Quantidade','Reservado em'],
-    reservations.map(r => [r.guest_name, gifts.find(g => g.id === r.gift_id)?.name || '',r.quantity,niceDate(r.created_at)])));
+    reservations.map(r => [r.guest_name, gifts.find(g => g.id === r.gift_id)?.name || r.baby_gifts?.name || 'Presente antigo',r.quantity,niceDate(r.created_at)])));
 
   function resetEditor() {
     $('#giftEditor').reset(); $('#editId').value = '';
